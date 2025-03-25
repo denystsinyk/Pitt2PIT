@@ -1,68 +1,107 @@
 import Image from 'next/image';
 import { Button } from './ui/button';
-import { ChevronRight } from 'lucide-react';
+import { ChevronRight, Users, Clock, DollarSign, PlaneTakeoff, School } from 'lucide-react';
 
 export default function HeroSection() {
   return (
-    <div className="flex flex-col justify-center items-center min-h-screen bg-gradient-to-b from-pitt-blue to-pitt-blue/90">
-      <main className="w-full px-4 md:px-6 lg:px-8 font-geist-sans max-w-7xl mx-auto">
-        <div className="text-center space-y-6 md:space-y-8 lg:space-y-12">
-          <h1 className="text-5xl sm:text-5xl mt-8 md:text-6xl lg:text-8xl tracking font-kalice leading-tight text-white">
-            Ubers to PIT from $9
-          </h1>
+    <div className="min-h-screen relative flex items-center overflow-hidden">
+      {/* Background with gradient and pattern */}
+      <div className="absolute inset-0 bg-gradient-to-br from-pitt-blue via-pitt-blue/95 to-[#001F5C] z-0" />
+      
+      {/* Diagonal gold accent */}
+      <div className="absolute -right-20 top-0 w-40 h-[200%] bg-pitt-gold/15 -rotate-45 z-0" />
+      
+      <main className="w-full px-4 md:px-6 lg:px-8 font-sans max-w-7xl mx-auto relative z-10">
+        <div className="flex flex-col md:flex-row items-start justify-between gap-12 md:gap-16">
+          {/* Left side - Text content */}
+          <div className="text-left space-y-8 flex-1">
+            <h1 className="text-4xl sm:text-5xl md:text-6xl font-sans font-extrabold leading-tight text-white">
+              Ubers to PIT from <span className="text-pitt-gold">$9</span>
+            </h1>
 
-          <h2 className="text-lg sm:text-2xl md:text-3xl lg:text-5xl tracking font-kalice text-pitt-gold">
-            Split your ride with other Pitt students
-          </h2>
+            <div className="space-y-8 text-white">
+              <h2 className="text-xl sm:text-2xl font-sans">
+                Split your ride with other Pitt students
+              </h2>
 
-          <div className="max-w-2xl mx-auto">
-            <div className="sm:mt-4 md:mt-8 p-6 md:p-8 rounded-3xl bg-white shadow-xl transition-all duration-300 md:text-lg text-sm">
-              <div className="space-y-5">
-                
-                <div className="space-y-4">
-                  <Button
-                    variant="outline"
-                    className="group w-full px-6 py-4 rounded-xl bg-white hover:bg-pitt-blue text-pitt-blue hover:text-white border border-pitt-blue transition-all duration-300 font-geist-sans flex items-center justify-between h-auto"
-                  >
-                    <span>Pitt to PIT (Departure only)</span>
-                    <ChevronRight className="h-5 w-5" />
-                  </Button>
-
-                  <Button
-                    variant="outline"
-                    className="group w-full px-6 py-4 rounded-xl bg-white hover:bg-pitt-blue text-pitt-blue hover:text-white border border-pitt-blue transition-all duration-300 font-geist-sans flex items-center justify-between h-auto"
-                  >
-                    <span>PIT to Pitt (Arrival only)</span>
-                    <ChevronRight className="h-5 w-5" />
-                  </Button>
-
-                  <Button
-                    className="group w-full px-6 py-4 rounded-xl bg-pitt-blue text-white hover:bg-pitt-blue/90 transition-all duration-300 font-geist-sans flex items-center justify-between h-auto"
-                  >
-                    <span>Round Trip</span>
-                    <ChevronRight className="h-5 w-5 text-pitt-gold" />
-                  </Button>
+              {/* Benefits section */}
+              <div className="space-y-4">
+                <div className="flex items-center gap-x-3">
+                  <div className="p-2 bg-pitt-gold/30 rounded-lg">
+                    <Users className="h-5 w-5 text-white" />
+                  </div>
+                  <p className="text-lg">Share rides with verified Pitt students only</p>
+                </div>
+                <div className="flex items-center gap-x-3">
+                  <div className="p-2 bg-pitt-gold/30 rounded-lg">
+                    <Clock className="h-5 w-5 text-white" />
+                  </div>
+                  <p className="text-lg">Schedule rides in advance or on-demand</p>
+                </div>
+                <div className="flex items-center gap-x-3">
+                  <div className="p-2 bg-pitt-gold/30 rounded-lg">
+                    <DollarSign className="h-5 w-5 text-white" />
+                  </div>
+                  <p className="text-lg">Save money by splitting the fare</p>
                 </div>
               </div>
-            </div>
 
-            <div className="flex justify-center items-center gap-x-4 text-base sm:text-lg w-1/2 sm:w-1/3 mx-auto my-3 sm:my-4 text-white">
-              <div className="flex-none">Powered by</div>
-              <Image
-                src="/images/uber-logo.svg"
-                alt="Uber Logo"
-                width={60}
-                height={20}
-                className="w-1/4 invert"
-              />
-              <div>and</div>
-              <Image
-                src="/images/Pitt_Logo.svg"
-                alt="Pitt Logo"
-                width={60}
-                height={20}
-                className="w-1/4"
-              />
+              <div className="flex items-center gap-x-6 text-base pt-4">
+                <div className="flex-none">Powered by</div>
+                <Image
+                  src="/images/uber-logo.svg"
+                  alt="Uber Logo"
+                  width={60}
+                  height={20}
+                  className="w-24 invert"
+                />
+                <div>and</div>
+                <Image
+                  src="/images/Pitt_Logo.svg"
+                  alt="Pitt Logo"
+                  width={60}
+                  height={20}
+                  className="w-24"
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Right side - Card */}
+          <div className="flex-1 w-full max-w-md">
+            <div className="p-8 rounded-lg bg-white shadow-lg border border-pitt-gold/20">
+              <div className="space-y-6">
+                <div>
+                  <h3 className="text-lg font-medium text-pitt-blue mb-2">Where are you headed?</h3>
+                  <p className="text-sm text-gray-600">Choose your destination to get started</p>
+                </div>
+
+                <Button
+                  variant="outline"
+                  className="group w-full px-6 py-4 rounded-md bg-white hover:bg-pitt-blue text-pitt-blue hover:text-white border-2 border-pitt-blue transition-all duration-300 font-sans flex items-center justify-between h-auto mb-4 focus:outline-none hover:border-pitt-gold"
+                >
+                  <div className="flex items-center gap-x-3">
+                    <PlaneTakeoff className="h-5 w-5" />
+                    <span className="text-lg">Take me to the airport</span>
+                  </div>
+                  <ChevronRight className="h-5 w-5 group-hover:text-pitt-gold" />
+                </Button>
+
+                <Button
+                  variant="outline"
+                  className="group w-full px-6 py-4 rounded-md bg-white hover:bg-pitt-blue text-pitt-blue hover:text-white border-2 border-pitt-blue transition-all duration-300 font-sans flex items-center justify-between h-auto focus:outline-none hover:border-pitt-gold"
+                >
+                  <div className="flex items-center gap-x-3">
+                    <School className="h-5 w-5" />
+                    <span className="text-lg">Take me back to Pitt</span>
+                  </div>
+                  <ChevronRight className="h-5 w-5 group-hover:text-pitt-gold" />
+                </Button>
+
+                <p className="text-xs text-gray-600 mt-6">
+                  By selecting a destination, you agree to our Terms of Service and Privacy Policy.
+                </p>
+              </div>
             </div>
           </div>
         </div>

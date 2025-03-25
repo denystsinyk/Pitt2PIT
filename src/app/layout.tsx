@@ -1,22 +1,32 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Inter, Outfit } from "next/font/google";
 import "./globals.css";
 
-const inter = Inter({ subsets: ["latin"] });
+const inter = Inter({ 
+  subsets: ["latin"],
+  variable: "--font-inter",
+});
+
+const outfit = Outfit({
+  subsets: ["latin"],
+  variable: "--font-outfit",
+});
 
 export const metadata: Metadata = {
-  title: "P2P | Ubers to PIT from $9",
-  description: "Pitt2PIT with verified Pitt students",
+  title: "Pitt2PIT - Split your ride with other Pitt students",
+  description: "Split your ride with other Pitt students",
 };
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
     <html lang="en" className="light">
-      <body className="bg-white antialiased">{children}</body>
+      <body className={`${inter.variable} ${outfit.variable} font-sans`}>
+        {children}
+      </body>
     </html>
   );
 }
