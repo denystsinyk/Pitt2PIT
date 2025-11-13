@@ -1,0 +1,10 @@
+# Minimal version - lets pip solve dependencies automatically
+fastapi
+uvicorn[standard]
+pydantic
+pydantic-settings
+supabase
+python-dotenv
+python-dateutil
+pytest
+pytest-asyncio

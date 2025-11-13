@@ -1,0 +1,45 @@
+PITT2PIT MIGRATION CHECKLIST
+=============================
+
+Go to: Supabase Dashboard → SQL Editor
+
+STEP 1: RESET (if you've run migrations before)
+[ ] Copy/paste: 000_reset_database.sql
+[ ] Click RUN
+[ ] See "Database reset complete"
+
+STEP 2: RUN MIGRATIONS IN ORDER
+[ ] Copy/paste: 001_create_users_table.sql → RUN → Wait for success ✓
+[ ] Copy/paste: 002_create_ride_groups_table.sql → RUN → Wait for success ✓
+[ ] Copy/paste: 003_create_group_members_table.sql → RUN → Wait for success ✓
+[ ] Copy/paste: 004_create_ride_requests_table.sql → RUN → Wait for success ✓
+[ ] Copy/paste: 005_email_domain_restriction.sql → RUN → Wait for success ✓
+[ ] Copy/paste: 006_cross_table_policies.sql → RUN → Wait for success ✓
+
+STEP 3: VERIFY
+Run this query:
+  SELECT table_name FROM information_schema.tables
+  WHERE table_schema = 'public' ORDER BY table_name;
+
+Should see:
+  [ ] group_members
+  [ ] ride_groups
+  [ ] ride_requests
+  [ ] users
+
+STEP 4: CONFIGURE AUTH
+[ ] Go to Authentication → Email Auth
+[ ] Add email domain: pitt.edu
+
+STEP 5: ENABLE REALTIME
+[ ] Go to Database → Replication
+[ ] Enable for: ride_groups
+[ ] Enable for: group_members
+
+STEP 6: GET API KEYS
+[ ] Go to Settings → API
+[ ] Copy Project URL
+[ ] Copy anon/public key (for frontend)
+[ ] Copy service_role key (for backend)
+
+✅ DONE! Ready to configure .env files
