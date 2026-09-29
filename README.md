@@ -28,4 +28,4 @@ Deploy the `backend/` directory as the service root. Railway builds the binary w
 
 ## Deferred
 
-The existing ride-group migrations and frontend screens are retained as historical scaffolding, but the Go API does not yet expose ride endpoints. Ride requests, matching, and group coordination are future work.
+Ride requests, time based matching, and group coordination are future work. The current frontend intentionally only includes the landing page, account flows, and profile editing.

@@ -1,50 +1,41 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Link, Navigate, Route, Routes } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthContext';
-import { ProtectedRoute } from './components/auth/ProtectedRoute';
-import { LandingPage } from './pages/LandingPage';
 import { LoginForm } from './components/auth/LoginForm';
+import { ProtectedRoute } from './components/auth/ProtectedRoute';
 import { SignupForm } from './components/auth/SignupForm';
-import { Dashboard } from './pages/Dashboard';
-import { BrowseGroups } from './pages/BrowseGroups';
-import { MyGroup } from './pages/MyGroup';
+import { Layout } from './components/layout/Layout';
+import { ProfilePage } from './pages/ProfilePage';
+import { useAuth } from './contexts/AuthContext';
+
+function Home() {
+  const { user } = useAuth();
+  return (
+    <Layout>
+      <section className="hero">
+        <p className="eyebrow">PITT STUDENTS · AIRPORT RIDES</p>
+        <h1>Getting to the airport is easier together.</h1>
+        <p className="intro">Create your profile now. We’re building a simple way to find Pitt students leaving around the same time.</p>
+        <div className="actions">
+          <Link className="button" to={user ? '/profile' : '/signup'}>{user ? 'View your profile' : 'Create an account'}</Link>
+          {!user && <Link className="button secondary" to="/login">Sign in</Link>}
+        </div>
+      </section>
+    </Layout>
+  );
+}
 
 function App() {
   return (
     <AuthProvider>
-      <Router>
+      <BrowserRouter>
         <Routes>
-          {/* Public routes */}
-          <Route path="/" element={<LandingPage />} />
+          <Route path="/" element={<Home />} />
           <Route path="/login" element={<LoginForm />} />
           <Route path="/signup" element={<SignupForm />} />
-
-          {/* Protected routes */}
-          <Route
-            path="/dashboard"
-            element={
-              <ProtectedRoute>
-                <Dashboard />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/browse"
-            element={
-              <ProtectedRoute>
-                <BrowseGroups />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/my-group"
-            element={
-              <ProtectedRoute>
-                <MyGroup />
-              </ProtectedRoute>
-            }
-          />
+          <Route path="/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
+          <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
-      </Router>
+      </BrowserRouter>
     </AuthProvider>
   );
 }

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bufio"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -8,6 +9,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"path/filepath"
 	"strings"
 	"time"
 )
@@ -56,6 +58,7 @@ func main() {
 }
 
 func loadConfig() (config, error) {
+	loadDotEnv(filepath.Join(".", ".env"))
 	cfg := config{
 		supabaseURL:     strings.TrimRight(os.Getenv("SUPABASE_URL"), "/"),
 		supabaseAnonKey: os.Getenv("SUPABASE_ANON_KEY"),
@@ -66,6 +69,30 @@ func loadConfig() (config, error) {
 		return config{}, errors.New("SUPABASE_URL, SUPABASE_ANON_KEY, and SUPABASE_SERVICE_ROLE_KEY are required")
 	}
 	return cfg, nil
+}
+
+func loadDotEnv(path string) {
+	file, err := os.Open(path)
+	if err != nil {
+		return
+	}
+	defer file.Close()
+	scanner := bufio.NewScanner(file)
+	for scanner.Scan() {
+		line := strings.TrimSpace(scanner.Text())
+		if line == "" || strings.HasPrefix(line, "#") {
+			continue
+		}
+		key, value, ok := strings.Cut(line, "=")
+		if !ok {
+			continue
+		}
+		key, value = strings.TrimSpace(key), strings.TrimSpace(value)
+		value = strings.Trim(value, "\"'")
+		if key != "" && os.Getenv(key) == "" {
+			_ = os.Setenv(key, value)
+		}
+	}
 }
 
 func (s *server) health(w http.ResponseWriter, _ *http.Request) {
