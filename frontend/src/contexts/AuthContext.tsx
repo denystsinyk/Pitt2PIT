@@ -6,7 +6,10 @@ interface AuthContextType {
   user: User | null;
   session: Session | null;
   loading: boolean;
-  signUp: (email: string, password: string, userData: UserData) => Promise<void>;
+  signUp: (email: string, password: string, userData: UserData) => Promise<{
+    requiresEmailConfirmation: boolean;
+    user: User | null;
+  }>;
   signIn: (email: string, password: string) => Promise<void>;
   signOut: () => Promise<void>;
   getAccessToken: () => string | null;
@@ -16,6 +19,30 @@ interface UserData {
   full_name: string;
   phone_number: string;
   default_pickup_location: string;
+}
+
+async function saveProfile(accessToken: string, userData: UserData) {
+  const response = await fetch(`${import.meta.env.VITE_API_URL}/api/profile`, {
+    method: 'PUT',
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(userData),
+  });
+  if (!response.ok) {
+    const result = await response.json().catch(() => ({}));
+    throw new Error(result.error || 'Could not save your profile');
+  }
+}
+
+async function ensureProfile(accessToken: string, userData: UserData) {
+  const response = await fetch(`${import.meta.env.VITE_API_URL}/api/profile`, {
+    headers: { Authorization: `Bearer ${accessToken}` },
+  });
+  if (response.ok) return;
+  if (response.status !== 404) throw new Error('Could not load your profile');
+  await saveProfile(accessToken, userData);
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -70,26 +97,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
 
     if (data.user && data.session) {
-      // User is logged in immediately (email confirmation disabled)
-      // Create user profile in public.users table
-      try {
-        const { error: profileError } = await supabase
-          .from('users')
-          .insert({
-            id: data.user.id,
-            email: data.user.email,
-            ...userData,
-          });
-
-        // Ignore duplicate key errors (profile might already exist)
-        if (profileError && !profileError.message.includes('duplicate key')) {
-          throw profileError;
-        }
-      } catch (err) {
-        // If profile creation fails, still consider signup successful
-        console.error('Profile creation error:', err);
-      }
-
+      await saveProfile(data.session.access_token, userData);
       return { requiresEmailConfirmation: false, user: data.user };
     }
 
@@ -106,24 +114,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     // Ensure user profile exists in public.users table
     if (data.user) {
-      // Check if profile exists
-      const { data: existingProfile } = await supabase
-        .from('users')
-        .select('id')
-        .eq('id', data.user.id)
-        .single();
-
-      // If profile doesn't exist, create it
-      if (!existingProfile) {
-        const userData = data.user.user_metadata;
-        await supabase.from('users').insert({
-          id: data.user.id,
-          email: data.user.email!,
-          full_name: userData.full_name || 'Unknown',
-          phone_number: userData.phone_number || '',
-          default_pickup_location: userData.default_pickup_location || 'Other',
-        });
-      }
+      const metadata = data.user.user_metadata;
+      await ensureProfile(data.session!.access_token, {
+        full_name: metadata.full_name || '',
+        phone_number: metadata.phone_number || '',
+        default_pickup_location: metadata.default_pickup_location || '',
+      });
     }
   };
 
